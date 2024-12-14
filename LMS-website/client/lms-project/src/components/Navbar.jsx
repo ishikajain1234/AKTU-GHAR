@@ -8,12 +8,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { Menu, School } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import {Menu, School} from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {Avatar, AvatarFallback, AvatarImage} from "@radix-ui/react-avatar";
 import DarkMode from "@/DarkMode";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
 import {
   Sheet,
   SheetClose,
@@ -24,6 +24,7 @@ import {
   SheetTrigger,
   SheetFooter,
 } from "./ui/sheet";
+import {Link} from "react-router-dom";
 
 const Navbar = () => {
   const user = true;
@@ -45,7 +46,7 @@ const Navbar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 {/* Avatar as the User Menu Trigger */}
-                <Avatar className="w-8 h-8 cursor-pointer border-2 border-gray-300 dark:border-gray-700 rounded-full">
+                {/* <Avatar className="w-8 h-8 cursor-pointer border-2 border-gray-300 dark:border-gray-700 rounded-full">
                   <AvatarImage
                     src="https://github.com/shadcn.png"
                     alt="User Avatar"
@@ -53,27 +54,43 @@ const Navbar = () => {
                   <AvatarFallback className="text-white bg-gray-400">
                     U
                   </AvatarFallback>
+                </Avatar> */}
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    alt="@shadcn"
+                    className="rounded-full"
+                  />
+                  <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
 
               {/* User Dropdown Menu Content */}
               <DropdownMenuContent className="w-64 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-300 rounded-lg shadow-xl border dark:border-gray-700 mt-2">
                 <div className="p-4 flex items-center gap-4">
-                  <Avatar className="w-10 h-10 cursor-pointer border-2 border-gray-300 dark:border-gray-700 rounded-full">
+                  {/* <Avatar className="w-10 h-10 cursor-pointer border-2 border-gray-300 dark:border-gray-700 rounded-full">
                     <AvatarImage
                       src="https://github.com/shadcn.png"
                       alt="User Avatar"
                     />
                     <AvatarFallback>U</AvatarFallback>
+                  </Avatar> */}
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      alt="@shadcn"
+                      className="rounded-full"
+                    />
+                    <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md px-4 py-2">
-                    My Learning
+                    <Link to="/my-learning">My Learning</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md px-4 py-2">
-                    Edit Profile
+                    <Link to="/Profile">Edit Profile</Link>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
@@ -113,7 +130,7 @@ const Navbar = () => {
 export default Navbar;
 
 const MobileSidebar = () => {
-  const role="instructor";
+  const role = "instructor";
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -142,16 +159,15 @@ const MobileSidebar = () => {
             Log out
           </Button>
         </div>
-        {role==="instructor" && (
-           <SheetFooter>
-           <SheetClose asChild>
-             <Button variant="outline" className="w-full">
-               Dashboard
-             </Button>
-           </SheetClose>
-         </SheetFooter>
+        {role === "instructor" && (
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button variant="outline" className="w-full">
+                Dashboard
+              </Button>
+            </SheetClose>
+          </SheetFooter>
         )}
-       
       </SheetContent>
     </Sheet>
   );
