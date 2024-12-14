@@ -17,6 +17,7 @@ import {
   useRegisterUserMutation,
 } from "@/features/api/authApi";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [signupInput, setSignupInput] = useState({
@@ -44,6 +45,7 @@ const Login = () => {
       isSuccess: loginIsSuccess,
     },
   ] = useLoginUserMutation();
+  const navigate=useNavigate();
 
   const changeInputHandler = (e, type) => {
     const { name, value } = e.target;
@@ -69,6 +71,7 @@ const Login = () => {
     }
     if (loginIsSuccess && loginData) {
       toast.success(loginData.message || "Login successful");
+      navigate("/");
     }
     if (registerError) {
       toast.error(registerError?.data?.message || "Signup failed");
