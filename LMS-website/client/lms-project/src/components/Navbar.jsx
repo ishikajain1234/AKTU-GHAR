@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,12 +8,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import {Menu, School} from "lucide-react";
-import {Button} from "@/components/ui/button";
-import {Avatar, AvatarFallback, AvatarImage} from "@radix-ui/react-avatar";
+import { Menu, School } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import DarkMode from "@/DarkMode";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import {
   Sheet,
   SheetClose,
@@ -24,11 +25,25 @@ import {
   SheetTrigger,
   SheetFooter,
 } from "./ui/sheet";
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLogoutUserMutation } from "@/features/api/authApi";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const user = true;
+  // const user = true;
+  const {user}=useSelector(store=>store.auth);
+  const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
+  const navigate=useNavigate();
+  const logoutHandler = async () => {
+    await logoutUser();
+  };
 
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message || "User logout");
+      navigate("/login");
+    }
+  }, [isSuccess])
   return (
     <div className="h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-800 border-b-gray-200 fixed top-0 left-0 right-0 shadow-lg z-10">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 md:px-10 h-full">
@@ -57,7 +72,7 @@ const Navbar = () => {
                 </Avatar> */}
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={user.photoUrl || "https://github.com/shadcn.png"}
                     alt="@shadcn"
                     className="rounded-full"
                   />
@@ -92,25 +107,33 @@ const Navbar = () => {
                   <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md px-4 py-2">
                     <Link to="/Profile">Edit Profile</Link>
                   </DropdownMenuItem>
-                </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md px-4 py-2">
+                <DropdownMenuItem onClick={logoutHandler} className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md px-4 py-2">
                   Log out
                 </DropdownMenuItem>
-                <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md px-4 py-2">
-                  Dashboard
+                </DropdownMenuGroup>
+                {
+                  user.role==="instructor" && (
+                    <>
+                     <DropdownMenuSeparator />
+                     <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md px-4 py-2">
+                  {Dashboard}
                 </DropdownMenuItem>
+                    </>
+                  )
+                }
+               
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-4">
-              <Button
+              <Button onClick={()=>navigate("/login")}
                 variant="outline"
                 className="text-sm rounded-lg px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 Login
               </Button>
-              <Button className="text-sm rounded-lg px-4 py-2 bg-blue-600 text-white hover:bg-blue-500">
+              <Button onClick={()=>navigate("/login")} className="text-sm rounded-lg px-4 py-2 bg-blue-600 text-white hover:bg-blue-500">
                 Signup
               </Button>
             </div>
