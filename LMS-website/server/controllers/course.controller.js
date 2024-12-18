@@ -1,3 +1,7 @@
+
+import Course from "../models/course.model.js"; // Adjust the path based on your folder structure
+
+
 export const createCourse = async (req, res) => {
     try {
         const { courseTitle, category } = req.body;
@@ -22,3 +26,24 @@ export const createCourse = async (req, res) => {
         });
     }
 };
+export const getCreatorCourses=async(req,res)=>{
+    try{
+       const userId=req.id;
+       const courses=await Course.find({creator:userId});
+       if(!courses){
+        return res.status(404).json({
+            course:[],
+            message:"Course not found"
+        })
+       };
+       return res.status(200).json({
+        courses,
+       })
+    }
+    catch(error){
+        console.log(error);
+        return res.status(500).json({
+            message:"Failed to create Course"
+        })
+    }
+}
