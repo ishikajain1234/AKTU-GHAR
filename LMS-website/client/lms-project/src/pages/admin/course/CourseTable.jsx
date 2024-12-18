@@ -8,6 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useGetCreatorCourseQuery } from "@/features/api/courseApi";
+import { Badge, Edit } from "lucide-react";
 import React from "react";
 import { useNavigate} from "react-router-dom";
 
@@ -57,7 +59,17 @@ const invoices = [
 ];
 
 const CourseTable = () => {
-    const Navigate = useNavigate();
+  const { data, isLoading } = useGetCreatorCourseQuery();
+  const Navigate = useNavigate();
+
+  if (isLoading) return <h1>Loading..</h1>;
+
+  // Log data for debugging
+  console.log("data", data);
+
+  // Handle undefined data or courses
+  const courses = data?.courses || []; // Default to an empty array if courses are undefined
+
   return (
     <div className="mt-20">
       <div>
@@ -73,13 +85,23 @@ const CourseTable = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {invoices.map((invoice) => (
-              <TableRow key={invoice.invoice}>
-                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                <TableCell>{invoice.paymentStatus}</TableCell>
-                <TableCell>{invoice.paymentMethod}</TableCell>
+            {courses.map((course) => (
+              <TableRow key={course._id}>
+                <TableCell className="font-medium">
+                  {course?.coursePrice || "NA"}
+                </TableCell>
+                <TableCell>
+                  {course.isPublished ? "Published" : "Draft"}
+                </TableCell>
+                <TableCell>{course.courseTitle}</TableCell>
                 <TableCell className="text-right">
-                  {invoice.totalAmount}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => Navigate(`${course._id}`)}
+                  >
+                    <Edit />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
