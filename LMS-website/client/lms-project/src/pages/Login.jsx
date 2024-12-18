@@ -20,32 +20,19 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [signupInput, setSignupInput] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [signupInput, setSignupInput] = useState({ name: "", email: "", password: "" });
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
 
   const [
     registerUser,
-    {
-      data: registerData,
-      error: registerError,
-      isLoading: registerIsLoading,
-      isSuccess: registerIsSuccess,
-    },
+    { data: registerData, error: registerError, isLoading: registerIsLoading, isSuccess: registerIsSuccess },
   ] = useRegisterUserMutation();
   const [
     loginUser,
-    {
-      data: loginData,
-      error: loginError,
-      isLoading: loginIsLoading,
-      isSuccess: loginIsSuccess,
-    },
+    { data: loginData, error: loginError, isLoading: loginIsLoading, isSuccess: loginIsSuccess },
   ] = useLoginUserMutation();
-  const navigate=useNavigate();
+
+  const navigate = useNavigate();
 
   const changeInputHandler = (e, type) => {
     const { name, value } = e.target;
@@ -58,6 +45,12 @@ const Login = () => {
 
   const handleRegistration = async (type) => {
     const inputData = type === "signup" ? signupInput : loginInput;
+
+    if (!inputData.email || !inputData.password || (type === "signup" && !inputData.name)) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
     try {
       await (type === "signup" ? registerUser : loginUser)(inputData);
     } catch (error) {
@@ -67,19 +60,26 @@ const Login = () => {
 
   useEffect(() => {
     if (registerIsSuccess && registerData) {
-      toast.success(registerData.message || "Signup successful");
+      toast.success(registerData?.message || "Signup successful");
     }
     if (loginIsSuccess && loginData) {
-      toast.success(loginData.message || "Login successful");
+      toast.success(loginData?.message || "Login successful");
       navigate("/");
     }
     if (registerError) {
       toast.error(registerError?.data?.message || "Signup failed");
     }
     if (loginError) {
-      toast.error(loginError.data.message || "Login failed");
+      toast.error(loginError?.data?.message || "Login failed");
     }
-  }, [registerIsSuccess, registerData, registerError, loginIsSuccess, loginData, loginError]);
+  }, [
+    registerIsSuccess,
+    registerData?.message,
+    registerError?.data?.message,
+    loginIsSuccess,
+    loginData?.message,
+    loginError?.data?.message,
+  ]);
 
   return (
     <div className="flex items-center w-full justify-center mt-20">
@@ -132,7 +132,9 @@ const Login = () => {
                 />
               </div>
               {registerError && (
-                <p className="text-red-500">{registerError?.data?.message || "Signup failed"}</p>
+                <p className="text-red-500">
+                  {registerError?.data?.message || "Signup failed"}
+                </p>
               )}
             </CardContent>
             <CardFooter>
@@ -185,7 +187,9 @@ const Login = () => {
                 />
               </div>
               {loginError && (
-                <p className="text-red-500">{loginError?.data?.message || "Login failed"}</p>
+                <p className="text-red-500">
+                  {loginError?.data?.message || "Login failed"}
+                </p>
               )}
             </CardContent>
             <CardFooter>
